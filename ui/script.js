@@ -1,10 +1,12 @@
 const container = document.getElementById('nametag-container');
+const selfContainer = document.getElementById('self-nametag-container');
 const nametags = new Map();
 const editorScreen = document.getElementById('editor-screen');
 const previewContainer = document.getElementById('editor-preview-container');
 
 let currentData = null;
 let previewElement = null;
+let selfElement = null;
 
 window.addEventListener('message', (event) => {
     const { action, payload, nametags: data, id } = event.data;
@@ -14,8 +16,7 @@ window.addEventListener('message', (event) => {
     } else if (action === 'updateSelf') {
         renderSelfNametag(payload);
     } else if (action === 'clear') {
-        container.innerHTML = '';
-        selfContainer.innerHTML = '';
+        clearAll();
     } else if (action === 'openEditor') {
         openEditor(payload);
     }
@@ -36,7 +37,7 @@ function updatePreview() {
     previewContainer.innerHTML = '';
     const tagData = {
         id: 'preview',
-        x: 50, y: 50, scale: 1.2, opacity: 1,
+        x: 0, y: 0, scale: 1.0, opacity: 1,
         data: {
             ...currentData,
             avatar: document.getElementById('input-avatar').value,
@@ -45,13 +46,8 @@ function updatePreview() {
     };
     
     previewElement = createNametagElement('preview');
-    previewElement.style.position = 'relative';
-    previewElement.style.left = '0';
-    previewElement.style.top = '0';
-    previewElement.style.transform = 'scale(1.2)';
-    
     previewContainer.appendChild(previewElement);
-    updateNametagElement(previewElement, tagData);
+    updateNametagElement(previewElement, tagData, true);
 }
 
 // Input listeners for live preview
@@ -59,7 +55,6 @@ document.getElementById('input-avatar').addEventListener('input', updatePreview)
 document.getElementById('input-banner').addEventListener('input', updatePreview);
 
 document.getElementById('btn-fetch-discord').addEventListener('click', () => {
-    // Send request to client to get discord avatar
     fetch(`https://${GetParentResourceName()}/fetchDiscord`, {
         method: 'POST',
         body: JSON.stringify({})
@@ -90,6 +85,28 @@ function closeEditor() {
     fetch(`https://${GetParentResourceName()}/closeEditor`, { method: 'POST' });
 }
 
+function renderSelfNametag(data) {
+    if (!data) {
+        if (selfElement) {
+            selfElement.remove();
+            selfElement = null;
+        }
+        return;
+    }
+
+    if (!selfElement) {
+        selfElement = createNametagElement('self');
+        selfContainer.appendChild(selfElement);
+    }
+
+    const tagData = {
+        id: 'self',
+        x: 0, y: 0, scale: 1.0, opacity: 1,
+        data: data
+    };
+    updateNametagElement(selfElement, tagData, true);
+}
+
 function renderNametags(data) {
     const activeIds = new Set();
 
@@ -117,58 +134,60 @@ function renderNametags(data) {
 
 function createNametagElement(id) {
     const el = document.createElement('div');
-    el.className = 'nametag new';
+    el.className = 'nametag-card';
     el.id = `nametag-${id}`;
     
     el.innerHTML = `
-        <div class="nametag-wrapper">
-            <img class="nametag-banner" src="" style="display:none">
-            <img class="nametag-avatar" src="https://i.imgur.com/8NzA8m8.png">
-            <div class="nametag-info">
+        <img class="nametag-banner" src="" style="display:none">
+        <div class="nametag-content">
+            <div class="nametag-avatar-container">
+                <img class="nametag-avatar" src="">
+                <div class="talking-indicator" style="display:none"></div>
+            </div>
+            <div class="nametag-details">
                 <div class="nametag-top">
-                    <span class="nametag-name"></span>
                     <span class="nametag-crew"></span>
+                    <span class="nametag-name"></span>
                 </div>
-                <span class="nametag-license"></span>
+                <div class="nametag-bottom">
+                    <div class="nametag-license"></div>
+                </div>
             </div>
-            <div class="voice-indicator" style="display:none">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-            </div>
-            <div class="racing-glow" style="display:none"></div>
         </div>
+        <div class="racing-glow" style="display:none"></div>
     `;
     
     return el;
 }
 
-function updateNametagElement(el, tag) {
+function updateNametagElement(el, tag, isStatic = false) {
     const { x, y, scale, opacity, data } = tag;
 
-    // Position and scale
-    el.style.left = `${x}%`;
-    el.style.top = `${y}%`;
-    el.style.opacity = opacity;
-    el.style.transform = `translate(-50%, -100%) scale(${scale})`;
+    if (!isStatic) {
+        el.style.left = `${x}%`;
+        el.style.top = `${y}%`;
+        el.style.opacity = opacity;
+        el.style.transform = `translate(-50%, -100%) scale(${scale})`;
+    }
 
-    // Content
     const nameEl = el.querySelector('.nametag-name');
     const crewEl = el.querySelector('.nametag-crew');
     const licenseEl = el.querySelector('.nametag-license');
     const avatarEl = el.querySelector('.nametag-avatar');
     const bannerImg = el.querySelector('.nametag-banner');
     const glow = el.querySelector('.racing-glow');
-    const voice = el.querySelector('.voice-indicator');
+    const talking = el.querySelector('.talking-indicator');
 
     if (nameEl.textContent !== data.name) nameEl.textContent = data.name;
     
     if (data.crew) {
-        crewEl.textContent = data.crew;
-        crewEl.style.display = 'block';
+        crewEl.textContent = `[${data.crew}]`;
+        crewEl.style.display = 'inline-block';
     } else {
         crewEl.style.display = 'none';
     }
 
-    const licenseText = `${data.licenseClass} CLASS • ${data.license}`;
+    const licenseText = `${data.license}`;
     if (licenseEl.textContent !== licenseText) {
         licenseEl.textContent = licenseText;
         licenseEl.className = `nametag-license license-${data.licenseClass}`;
@@ -185,11 +204,15 @@ function updateNametagElement(el, tag) {
         bannerImg.style.display = 'none';
     }
 
-    voice.style.display = tag.isTalking ? 'flex' : 'none';
+    if (talking) talking.style.display = tag.isTalking ? 'block' : 'none';
     glow.style.display = data.isRacing ? 'block' : 'none';
 }
 
 function clearAll() {
     nametags.forEach((el) => el.remove());
     nametags.clear();
+    if (selfElement) {
+        selfElement.remove();
+        selfElement = null;
+    }
 }
