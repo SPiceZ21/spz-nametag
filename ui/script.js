@@ -7,12 +7,15 @@ let currentData = null;
 let previewElement = null;
 
 window.addEventListener('message', (event) => {
-    const { action, nametags: data, payload } = event.data;
+    const { action, payload, nametags: data, id } = event.data;
 
     if (action === 'update') {
         renderNametags(data);
+    } else if (action === 'updateSelf') {
+        renderSelfNametag(payload);
     } else if (action === 'clear') {
-        clearAll();
+        container.innerHTML = '';
+        selfContainer.innerHTML = '';
     } else if (action === 'openEditor') {
         openEditor(payload);
     }

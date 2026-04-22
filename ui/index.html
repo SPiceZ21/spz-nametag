@@ -5,11 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SPiceZ Nametags</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Panchang';
+            src: url('../../spz-poll/ui/public/fonts/Panchang-Bold.ttf') format('truetype');
+            font-weight: 700;
+        }
+        @font-face {
+            font-family: 'Panchang';
+            src: url('../../spz-poll/ui/public/fonts/Panchang-Regular.ttf') format('truetype');
+            font-weight: 400;
+        }
+    </style>
 </head>
 <body>
+    <div id="self-nametag-container">
+        <!-- Self nametag will be injected here -->
+    </div>
+
     <div id="nametag-container">
-        <!-- Nametags will be injected here -->
+        <!-- Other nametags will be injected here -->
     </div>
 
     <div id="editor-screen" style="display:none">
