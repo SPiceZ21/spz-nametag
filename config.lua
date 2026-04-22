@@ -22,7 +22,7 @@ Config.Colors = {
     ['Default'] = '#FFFFFF'
 }
 
-Config.DefaultAvatar = 'https://i.imgur.com/8NzA8m8.png' -- Generic racing helmet/avatar
+Config.DefaultAvatar = 'https://github.com/SPiceZ21/spz-core-media-kit/blob/main/Extra/nametag_profile.png?raw=true' -- Generic racing helmet/avatar
 Config.DefaultBanner = 'https://github.com/SPiceZ21/spz-core-media-kit/blob/main/Extra/nametag.png?raw=true'
 
 Config.Keybind = {
