@@ -42,9 +42,9 @@ body {
     align-items: center;
     background: var(--bg-dark);
     border: 1px solid var(--border);
-    padding: 4px 12px;
-    border-radius: 4px;
-    gap: 10px;
+    padding: 8px 24px;
+    border-radius: 6px;
+    gap: 15px;
     position: relative;
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
@@ -66,10 +66,10 @@ body {
 }
 
 .nametag-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 2px;
-    border: 1px solid var(--accent);
+    width: 48px;
+    height: 48px;
+    border-radius: 4px;
+    border: 2px solid var(--accent);
     transform: skew(10deg); /* Counter-skew */
     background: #000;
 }
@@ -87,8 +87,8 @@ body {
 }
 
 .nametag-name {
-    font-size: 16px;
-    font-weight: 900;
+    font-size: 22px;
+    font-weight: 500;
     color: var(--text-main);
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -96,8 +96,8 @@ body {
 }
 
 .nametag-crew {
-    font-size: 11px;
-    font-weight: 700;
+    font-size: 14px;
+    font-weight: 500;
     color: var(--accent);
     background: rgba(255, 0, 60, 0.1);
     padding: 1px 4px;
@@ -106,8 +106,8 @@ body {
 
 .nametag-license {
     font-family: 'Orbitron', sans-serif;
-    font-size: 10px;
-    font-weight: 900;
+    font-size: 12px;
+    font-weight: 400;
     color: var(--text-dim);
 }
 
@@ -120,8 +120,8 @@ body {
 
 /* Voice Indicator */
 .voice-indicator {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     color: var(--accent);
     display: flex;
     align-items: center;
@@ -208,7 +208,7 @@ body {
 }
 
 #editor-preview-container {
-    height: 60px; /* Space for the tag */
+    height: 90px; /* Increased to accommodate larger tag */
     display: flex;
     align-items: center;
     justify-content: center;

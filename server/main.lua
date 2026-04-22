@@ -39,15 +39,11 @@ RegisterNetEvent("spz-nametag:saveSettings", function(data)
     local profile = exports["spz-identity"]:GetProfile(source)
     if not profile then return end
 
-    -- Update profile with new avatar and banner
-    -- Note: UpdateProfile usually only allows whitelisted keys.
-    -- I'll use UpdateProfile if those keys are added, or just set them in state bags directly.
-    -- For persistence, we should ideally add these to the players table in DB.
-    
-    -- Assuming we might have these keys in identity later, but for now we update state bags.
-    local playerState = Player(source).state
-    playerState:set('spz:avatar', data.avatar, true)
-    playerState:set('spz:banner', data.banner, true)
+    -- Update profile with new avatar and banner for persistence
+    exports["spz-identity"]:UpdateProfile(source, {
+        avatar_url = data.avatar,
+        banner_url = data.banner
+    })
 
     print(string.format("[spz-nametag] Saved customized settings for %s", GetPlayerName(source)))
 end)
