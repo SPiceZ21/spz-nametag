@@ -49,7 +49,7 @@ RegisterNetEvent("spz-nametag:saveSettings", function(data)
 end)
 
 -- Discord Avatar Fetch Callback
-exports['spz-lib']:RegisterCallback('spz-nametag:getDiscordAvatar', function(source, cb)
+exports['spz-lib']:RegisterServerCallback('spz-nametag:getDiscordAvatar', function(source, cb)
     local discordId = nil
     for i = 0, GetNumPlayerIdentifiers(source) - 1 do
         local id = GetPlayerIdentifier(source, i)
