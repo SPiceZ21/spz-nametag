@@ -4,6 +4,34 @@ local ActiveNametags = {}
 local ShowNametags = true
 local MyId = GetPlayerServerId(PlayerId())
 
+local PlayerDataCache = {}
+
+local function GetPlayerData(serverId)
+    if PlayerDataCache[serverId] and (GetGameTimer() - PlayerDataCache[serverId].lastUpdate < Config.DataRefreshInterval) then
+        return PlayerDataCache[serverId].data
+    end
+
+    local p = Player(serverId).state
+    if not p['spz:name'] then return nil end
+
+    local data = {
+        name = p['spz:name'],
+        crew = p['spz:crew'],
+        license = p['spz:license'],
+        licenseClass = p['spz:licenseClass'],
+        avatar = p['spz:avatar'],
+        banner = p['spz:banner'],
+        isRacing = p['spz:is_racing'] or false
+    }
+
+    PlayerDataCache[serverId] = {
+        data = data,
+        lastUpdate = GetGameTimer()
+    }
+
+    return data
+end
+
 -- Toggle command
 RegisterCommand(Config.Keybind.command, function()
     ShowNametags = not ShowNametags
@@ -48,35 +76,6 @@ RegisterNUICallback("fetchDiscord", function(data, cb)
         cb({ avatar = avatar })
     end)
 end)
-
--- Data caching for performance
-local PlayerDataCache = {}
-
-local function GetPlayerData(serverId)
-    if PlayerDataCache[serverId] and (GetGameTimer() - PlayerDataCache[serverId].lastUpdate < Config.DataRefreshInterval) then
-        return PlayerDataCache[serverId].data
-    end
-
-    local p = Player(serverId).state
-    if not p.spz_name then return nil end
-
-    local data = {
-        name = p['spz:name'],
-        crew = p['spz:crew'],
-        license = p['spz:license'],
-        licenseClass = p['spz:licenseClass'],
-        avatar = p['spz:avatar'],
-        banner = p['spz:banner'],
-        isRacing = p['spz:is_racing'] or false
-    }
-
-    PlayerDataCache[serverId] = {
-        data = data,
-        lastUpdate = GetGameTimer()
-    }
-
-    return data
-end
 
 -- Main Render Loop
 CreateThread(function()
