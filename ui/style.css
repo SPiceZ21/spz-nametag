@@ -146,6 +146,147 @@ body {
     box-shadow: 0 0 10px var(--accent);
 }
 
+/* --- EDITOR SCREEN --- */
+#editor-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.9) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.editor-modal {
+    width: 500px;
+    background: rgba(20, 20, 25, 0.95);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 30px;
+    transform: skew(-5deg);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+}
+
+.editor-modal > * {
+    transform: skew(5deg);
+}
+
+.editor-header h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--accent);
+    margin-bottom: 5px;
+}
+
+.editor-header p {
+    color: var(--text-dim);
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+.editor-preview-section {
+    background: rgba(0,0,0,0.3);
+    border-radius: 6px;
+    padding: 40px 20px;
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px dashed var(--border);
+}
+
+.preview-label {
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+}
+
+#editor-preview-container {
+    height: 60px; /* Space for the tag */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.editor-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-group label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+}
+
+.input-group input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    padding: 12px;
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.input-group input:focus {
+    border-color: var(--accent);
+}
+
+.editor-footer {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+}
+
+.btn-secondary { background: rgba(255, 255, 255, 0.1); color: #fff; margin-top: 5px; font-size: 11px; padding: 8px; }
+.btn-secondary:hover { background: rgba(255, 255, 255, 0.2); }
+
+.btn-danger { background: rgba(255, 0, 0, 0.2); color: #ff4d4d; border: 1px solid rgba(255,0,0,0.3); }
+.btn-danger:hover { background: rgba(255, 0, 0, 0.4); }
+
+.btn-success { background: var(--accent); color: #fff; }
+.btn-success:hover { filter: brightness(1.2); box-shadow: 0 0 20px rgba(255, 0, 60, 0.4); }
+
+/* Animations */
+@keyframes modalIn {
+    from { opacity: 0; transform: translate(0, 20px) skew(-5deg); }
+    to { opacity: 1; transform: translate(0, 0) skew(-5deg); }
+}
+
+#editor-screen.active .editor-modal {
+    animation: modalIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
 /* Animations */
 @keyframes fadeIn {
     from { opacity: 0; transform: scale(0.8) translate(-50%, -100%); }

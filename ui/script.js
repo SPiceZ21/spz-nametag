@@ -1,15 +1,91 @@
 const container = document.getElementById('nametag-container');
 const nametags = new Map();
+const editorScreen = document.getElementById('editor-screen');
+const previewContainer = document.getElementById('editor-preview-container');
+
+let currentData = null;
+let previewElement = null;
 
 window.addEventListener('message', (event) => {
-    const { action, nametags: data } = event.data;
+    const { action, nametags: data, payload } = event.data;
 
     if (action === 'update') {
         renderNametags(data);
     } else if (action === 'clear') {
         clearAll();
+    } else if (action === 'openEditor') {
+        openEditor(payload);
     }
 });
+
+function openEditor(data) {
+    currentData = data;
+    document.getElementById('input-avatar').value = data.avatar || '';
+    document.getElementById('input-banner').value = data.banner || '';
+    
+    editorScreen.style.display = 'flex';
+    editorScreen.classList.add('active');
+    
+    updatePreview();
+}
+
+function updatePreview() {
+    previewContainer.innerHTML = '';
+    const tagData = {
+        id: 'preview',
+        x: 50, y: 50, scale: 1.2, opacity: 1,
+        data: {
+            ...currentData,
+            avatar: document.getElementById('input-avatar').value,
+            banner: document.getElementById('input-banner').value
+        }
+    };
+    
+    previewElement = createNametagElement('preview');
+    previewElement.style.position = 'relative';
+    previewElement.style.left = '0';
+    previewElement.style.top = '0';
+    previewElement.style.transform = 'scale(1.2)';
+    
+    previewContainer.appendChild(previewElement);
+    updateNametagElement(previewElement, tagData);
+}
+
+// Input listeners for live preview
+document.getElementById('input-avatar').addEventListener('input', updatePreview);
+document.getElementById('input-banner').addEventListener('input', updatePreview);
+
+document.getElementById('btn-fetch-discord').addEventListener('click', () => {
+    // Send request to client to get discord avatar
+    fetch(`https://${GetParentResourceName()}/fetchDiscord`, {
+        method: 'POST',
+        body: JSON.stringify({})
+    }).then(resp => resp.json()).then(data => {
+        if (data.avatar) {
+            document.getElementById('input-avatar').value = data.avatar;
+            updatePreview();
+        }
+    });
+});
+
+document.getElementById('btn-save').addEventListener('click', () => {
+    fetch(`https://${GetParentResourceName()}/saveNametag`, {
+        method: 'POST',
+        body: JSON.stringify({
+            avatar: document.getElementById('input-avatar').value,
+            banner: document.getElementById('input-banner').value
+        })
+    });
+    closeEditor();
+});
+
+document.getElementById('btn-cancel').addEventListener('click', closeEditor);
+
+function closeEditor() {
+    editorScreen.style.display = 'none';
+    editorScreen.classList.remove('active');
+    fetch(`https://${GetParentResourceName()}/closeEditor`, { method: 'POST' });
+}
 
 function renderNametags(data) {
     const activeIds = new Set();

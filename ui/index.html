@@ -12,6 +12,40 @@
         <!-- Nametags will be injected here -->
     </div>
 
+    <div id="editor-screen" style="display:none">
+        <div class="editor-modal">
+            <div class="editor-header">
+                <h1>EDIT NAMETAG</h1>
+                <p>Customize your presence on the track</p>
+            </div>
+
+            <div class="editor-preview-section">
+                <div class="preview-label">LIVE PREVIEW</div>
+                <div id="editor-preview-container">
+                    <!-- Preview nametag injected here -->
+                </div>
+            </div>
+
+            <div class="editor-form">
+                <div class="input-group">
+                    <label>AVATAR URL (PNG/JPG)</label>
+                    <input type="text" id="input-avatar" placeholder="https://cdn.discordapp.com/...">
+                    <button id="btn-fetch-discord" class="btn-secondary">USE DISCORD AVATAR</button>
+                </div>
+
+                <div class="input-group">
+                    <label>BANNER URL (PNG/JPG/GIF)</label>
+                    <input type="text" id="input-banner" placeholder="https://cdn.discordapp.com/...">
+                </div>
+
+                <div class="editor-footer">
+                    <button id="btn-cancel" class="btn-danger">CANCEL</button>
+                    <button id="btn-save" class="btn-success">SAVE CHANGES</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

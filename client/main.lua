@@ -17,6 +17,38 @@ if Config.Keybind.enabled then
     RegisterKeyMapping(Config.Keybind.command, Config.Keybind.description, "keyboard", Config.Keybind.key)
 end
 
+-- Editor Command
+RegisterCommand("editnametag", function()
+    local data = GetPlayerData(MyId)
+    if not data then return end
+    
+    SetNuiFocus(true, true)
+    SendNUIMessage({
+        action = "openEditor",
+        payload = data
+    })
+end)
+
+-- NUI Callbacks
+RegisterNUICallback("closeEditor", function(data, cb)
+    SetNuiFocus(false, false)
+    cb('ok')
+end)
+
+RegisterNUICallback("saveNametag", function(data, cb)
+    SetNuiFocus(false, false)
+    TriggerServerEvent("spz-nametag:saveSettings", data)
+    cb('ok')
+end)
+
+RegisterNUICallback("fetchDiscord", function(data, cb)
+    -- We'll call a server event to get the discord avatar
+    -- Since we can't do it directly here, we use a callback
+    exports['spz-lib']:TriggerCallback('spz-nametag:getDiscordAvatar', function(avatar)
+        cb({ avatar = avatar })
+    end)
+end)
+
 -- Data caching for performance
 local PlayerDataCache = {}
 
