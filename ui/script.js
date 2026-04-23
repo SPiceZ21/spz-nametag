@@ -134,32 +134,33 @@ function renderNametags(data) {
 
 function createNametagElement(id) {
     const el = document.createElement('div');
-    el.className = 'nametag-card';
+    el.className = id === 'self' ? '' : 'nametag';
     el.id = `nametag-${id}`;
     
     el.innerHTML = `
-        <img class="nametag-banner" src="" style="display:none">
-        <div class="nametag-content">
-            <div class="nametag-avatar-container">
-                <img class="nametag-avatar" src="">
-                <div class="talking-indicator" style="display:none"></div>
-            </div>
-            <div class="nametag-details">
-                <div class="nametag-top">
-                    <span class="nametag-crew"></span>
-                    <span class="nametag-name"></span>
+        <div class="nametag-card">
+            <img class="nametag-banner" src="" style="display:none">
+            <div class="nametag-content">
+                <div class="nametag-avatar-container">
+                    <img class="nametag-avatar" src="">
+                    <div class="talking-indicator" style="display:none"></div>
                 </div>
-                <div class="nametag-bottom">
-                    <div class="nametag-license"></div>
+                <div class="nametag-details">
+                    <div class="nametag-top">
+                        <span class="nametag-crew"></span>
+                        <span class="nametag-name"></span>
+                    </div>
+                    <div class="nametag-bottom">
+                        <div class="nametag-license"></div>
+                    </div>
                 </div>
             </div>
+            <div class="racing-glow" style="display:none"></div>
         </div>
-        <div class="racing-glow" style="display:none"></div>
     `;
     
     return el;
 }
-
 function updateNametagElement(el, tag, isStatic = false) {
     const { x, y, scale, opacity, data } = tag;
 
@@ -178,7 +179,8 @@ function updateNametagElement(el, tag, isStatic = false) {
     const glow = el.querySelector('.racing-glow');
     const talking = el.querySelector('.talking-indicator');
 
-    if (nameEl.textContent !== data.name) nameEl.textContent = data.name;
+    const nameValue = data.name || "Unknown";
+    if (nameEl.textContent !== nameValue) nameEl.textContent = nameValue;
     
     if (data.crew) {
         crewEl.textContent = `[${data.crew}]`;
@@ -187,13 +189,14 @@ function updateNametagElement(el, tag, isStatic = false) {
         crewEl.style.display = 'none';
     }
 
-    const licenseText = `${data.license}`;
+    const licenseText = `${data.license || "D-5"}`;
     if (licenseEl.textContent !== licenseText) {
         licenseEl.textContent = licenseText;
-        licenseEl.className = `nametag-license license-${data.licenseClass}`;
+        licenseEl.className = `nametag-license license-${data.licenseClass || "D"}`;
     }
 
-    if (avatarEl.src !== data.avatar) avatarEl.src = data.avatar;
+    const avatarUrl = data.avatar || "https://i.imgur.com/8NzA8m8.png";
+    if (avatarEl.src !== avatarUrl) avatarEl.src = avatarUrl;
 
     if (data.banner) {
         if (bannerImg.src !== data.banner) {
