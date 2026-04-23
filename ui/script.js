@@ -139,6 +139,7 @@ function createNametagElement(id) {
     
     el.innerHTML = `
         <div class="nametag-card">
+            <div class="bg-num"></div>
             <img class="nametag-banner" src="" style="display:none">
             <div class="nametag-content">
                 <div class="nametag-avatar-container">
@@ -194,6 +195,9 @@ function updateNametagElement(el, tag, isStatic = false) {
         licenseEl.textContent = licenseText;
         licenseEl.className = `nametag-license license-${data.licenseClass || "D"}`;
     }
+
+    const bgNumEl = el.querySelector('.bg-num');
+    if (bgNumEl) bgNumEl.textContent = data.licenseClass || "D";
 
     const avatarUrl = data.avatar || "https://i.imgur.com/8NzA8m8.png";
     if (avatarEl.src !== avatarUrl) avatarEl.src = avatarUrl;
