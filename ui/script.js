@@ -134,7 +134,7 @@ function renderNametags(data) {
 
 function createNametagElement(id) {
     const el = document.createElement('div');
-    el.className = id === 'self' ? '' : 'nametag';
+    el.className = (id === 'self' || id === 'preview') ? '' : 'nametag';
     el.id = `nametag-${id}`;
     
     el.innerHTML = `

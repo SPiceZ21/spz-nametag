@@ -12,10 +12,8 @@ local function GetPlayerData(serverId)
     end
 
     local p = Player(serverId).state
-    if not p['spz:name'] then return nil end
-
     local data = {
-        name = p['spz:name'],
+        name = p['spz:name'] or GetPlayerName(serverId) or "Unknown",
         crew = p['spz:crew'],
         license = p['spz:license'],
         licenseClass = p['spz:licenseClass'],

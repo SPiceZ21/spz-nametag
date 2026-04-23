@@ -39,8 +39,8 @@ body {
 }
 
 .nametag-card {
-    width: 500px;
-    height: 90px;
+    width: 300px;
+    height: 60px;
     background: rgba(10, 10, 14, 0.95);
     border: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
@@ -65,18 +65,18 @@ body {
 .nametag-content {
     position: relative;
     z-index: 2;
-    padding: 15px 20px;
+    padding: 8px 12px;
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 12px;
     height: 100%;
     background: linear-gradient(90deg, rgba(10, 10, 14, 0.8) 0%, rgba(10, 10, 14, 0) 60%);
 }
 
 .nametag-avatar-container {
     position: relative;
-    width: 56px;
-    height: 56px;
+    width: 40px;
+    height: 40px;
     flex-shrink: 0;
 }
 
@@ -114,7 +114,7 @@ body {
 .nametag-crew {
     font-family: 'Panchang', sans-serif;
     font-weight: 700;
-    font-size: 10px;
+    font-size: 9px;
     color: #FF6200;
     letter-spacing: 1px;
 }
@@ -122,7 +122,7 @@ body {
 .nametag-name {
     font-family: 'Panchang', sans-serif;
     font-weight: 700;
-    font-size: 18px;
+    font-size: 14px;
     color: #fff;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -137,7 +137,7 @@ body {
 .nametag-license {
     font-family: 'Outfit', sans-serif;
     font-weight: 500;
-    font-size: 11px;
+    font-size: 9px;
     color: rgba(255, 255, 255, 0.5);
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -239,8 +239,8 @@ body {
 }
 
 #editor-preview-container {
-    width: 500px;
-    height: 90px;
+    width: 300px;
+    height: 60px;
     position: relative;
 }
 
