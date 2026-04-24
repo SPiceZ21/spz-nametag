@@ -12,8 +12,12 @@ local function GetPlayerData(serverId)
     end
 
     local p = Player(serverId).state
+    local rawName = p['spz:name'] or GetPlayerName(serverId) or "Racer"
+    if rawName == "**INVALID**" then rawName = GetPlayerName(serverId) or "Racer" end
+    if rawName == "**INVALID**" then rawName = "Racer" end
+
     local data = {
-        name = p['spz:name'] or GetPlayerName(serverId) or "Unknown",
+        name = rawName,
         crew = p['spz:crew'],
         license = p['spz:license'],
         licenseClass = p['spz:licenseClass'],
