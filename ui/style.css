@@ -1,394 +1,191 @@
+/* spz-nametag — local token bridge → spz-ui values */
 :root {
-    --accent: #ff003c;
-    --bg-dark: rgba(10, 10, 15, 0.85);
-    --border: rgba(255, 255, 255, 0.1);
-    --text-main: #ffffff;
-    --text-dim: rgba(255, 255, 255, 0.6);
+  --bg:           #07080A;
+  --surface:      #0E1014;
+  --surface-2:    #14171C;
+  --border:       rgba(255,255,255,.07);
+  --border-focus: rgba(255,98,0,.5);
+  --accent:       #FF6200;
+  --accent-dim:   #D14E00;
+  --accent-muted: rgba(255,98,0,.12);
+  --accent-ring:  rgba(255,98,0,.3);
+  --fg:           #F0F2F5;
+  --muted:        #5C6370;
+  --muted-2:      #3A3F4A;
+  --ease:         cubic-bezier(.16,1,.3,1);
+  --dur:          140ms;
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+html, body {
+  width: 100vw; height: 100vh; overflow: hidden;
+  background: transparent;
+  -webkit-font-smoothing: antialiased;
 }
 
-body {
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    font-family: 'Outfit', sans-serif;
-    background: transparent;
-}
-
+/* ═══════════════════════════════════════════════════════════════════════════
+   WORLD-SPACE NAMETAG CONTAINER
+   ═══════════════════════════════════════════════════════════════════════════ */
 #nametag-container {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    pointer-events: none;
+  width: 100%; height: 100%;
+  position: relative;
+  pointer-events: none;
 }
 
 .nametag {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transform: translate(-50%, -100%);
-    pointer-events: none;
-    transition: opacity 0.2s ease, transform 0.05s linear;
-    will-change: transform, opacity;
+  position: absolute;
+  display: flex; flex-direction: column; align-items: center;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+  transition: opacity 200ms ease, transform 50ms linear;
+  will-change: transform, opacity;
 }
 
+/* CRITICAL: keep 300×60 for world-space coordinate accuracy */
 .nametag-card {
-    width: 300px;
-    height: 60px;
-    background: rgba(10, 10, 14, 0.97);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  width: 300px; height: 60px;
+  background: rgba(7,8,10,.95);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: flex-end;
 }
 
 .bg-num {
-    position: absolute;
-    right: 5px;
-    bottom: -15px;
-    font-size: 80px;
-    font-weight: 800;
-    color: rgba(255, 255, 255, 0.06);
-    pointer-events: none;
-    line-height: 1;
-    z-index: 0;
+  position: absolute; right: 6px; bottom: -16px;
+  font-size: 76px; font-weight: 600;
+  color: rgba(255,255,255,.05);
+  pointer-events: none; line-height: 1; z-index: 0;
 }
 
 .nametag-banner {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.4;
-    z-index: 1;
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; opacity: .35; z-index: 1;
 }
 
 .nametag-content {
-    position: relative;
-    z-index: 2;
-    padding: 8px 12px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    height: 100%;
-    background: linear-gradient(90deg, rgba(10, 10, 14, 0.8) 0%, rgba(10, 10, 14, 0) 60%);
+  position: relative; z-index: 2;
+  padding: 8px 12px;
+  display: flex; align-items: center; gap: 10px; height: 100%;
+  background: linear-gradient(90deg, rgba(7,8,10,.85) 0%, rgba(7,8,10,0) 65%);
 }
 
-.nametag-avatar-container {
-    position: relative;
-    width: 40px;
-    height: 40px;
-    flex-shrink: 0;
-}
-
+.nametag-avatar-container { position: relative; width: 38px; height: 38px; flex-shrink: 0; }
 .nametag-avatar {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border: 2px solid #FF6200;
+  width: 100%; height: 100%; object-fit: cover;
+  border-radius: 6px; border: 1px solid var(--accent); display: block;
 }
 
 .talking-indicator {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    width: 12px;
-    height: 12px;
-    background: #00AEEF;
-    border-radius: 50%;
-    box-shadow: 0 0 10px rgba(0, 174, 239, 0.6);
-    border: 2px solid #000;
+  position: absolute; top: -4px; right: -4px;
+  width: 10px; height: 10px;
+  background: #00aeef; border-radius: 50%; border: 2px solid var(--bg);
 }
 
-.nametag-details {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.nametag-top {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+.nametag-details { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.nametag-top     { display: flex; align-items: center; gap: 7px; }
 
 .nametag-crew {
-    font-family: 'Panchang', sans-serif;
-    font-weight: 700;
-    font-size: 9px;
-    color: #FF6200;
-    letter-spacing: 1px;
+  font-size: 8px; font-weight: 500; color: var(--accent);
+  letter-spacing: .05em; text-transform: uppercase;
+  background: var(--accent-muted); border: 1px solid rgba(255,98,0,.3);
+  border-radius: 3px; padding: 1px 5px; white-space: nowrap;
 }
 
 .nametag-name {
-    font-family: 'Panchang', sans-serif;
-    font-weight: 700;
-    font-size: 14px;
-    color: #fff;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+  font-size: 13px; font-weight: 500; color: var(--fg);
+  text-transform: uppercase; letter-spacing: .03em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
-.nametag-bottom {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.nametag-bottom  { display: flex; align-items: center; gap: 8px; }
+.nametag-license { font-size: 9px; font-weight: 500; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
+
+.license-S { color: #ffd700 !important }
+.license-A { color: #FF6200 !important }
+.license-B { color: #4DA8FF !important }
+.license-C { color: #29D398 !important }
+.license-D { color: var(--muted) !important }
+
+.racing-glow { position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: var(--accent); z-index: 3; }
+
+@keyframes nametag-in {
+  from { opacity: 0; transform: scale(.9) translate(-50%, -100%) }
+  to   { opacity: 1; transform: scale(1)  translate(-50%, -100%) }
 }
+.nametag.new { animation: nametag-in 250ms var(--ease) }
 
-.nametag-license {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 500;
-    font-size: 9px;
-    color: rgba(255, 255, 255, 0.5);
-    letter-spacing: 1px;
-    text-transform: uppercase;
+/* ═══════════════════════════════════════════════════════════════════════════
+   SELF NAMETAG (top-right HUD)
+   ═══════════════════════════════════════════════════════════════════════════ */
+#self-nametag-container {
+  position: fixed; top: 28px; right: 28px;
+  z-index: 100; pointer-events: none;
+  animation: self-slide 280ms var(--ease);
 }
-
-.license-S { color: #FFD700 !important; font-weight: 700; }
-.license-A { color: #FF4500 !important; }
-.license-B { color: #00AEEF !important; }
-.license-C { color: #32CD32 !important; }
-.license-D { color: #A9A9A9 !important; }
-
-.racing-glow {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: #FF6200;
-    box-shadow: 0 -2px 10px rgba(255, 98, 0, 0.4);
-    z-index: 3;
+@keyframes self-slide {
+  from { opacity: 0; transform: translateX(16px) }
+  to   { opacity: 1; transform: none }
 }
+#self-nametag-container .nametag-card { position: relative; transform: none !important; opacity: 1 !important; }
 
-/* --- EDITOR SCREEN --- */
+/* ═══════════════════════════════════════════════════════════════════════════
+   EDITOR MODAL — layout only; spz-ui classes handle component styles
+   ═══════════════════════════════════════════════════════════════════════════ */
 #editor-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(8px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+}
+
+.editor-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(7,8,10,.8);
+  backdrop-filter: blur(6px);
 }
 
 .editor-modal {
-    width: 600px;
-    background: rgba(10, 10, 14, 0.97);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
-    overflow: hidden;
-    animation: editor-pop 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+  position: relative; z-index: 1;
+  width: 520px;
+  border-radius: var(--spz-radius-lg) !important;
+  display: flex; flex-direction: column;
+  padding: 0 !important;
+  animation: modal-in 200ms var(--ease);
+  overflow: hidden;
 }
-
-@keyframes editor-pop {
-    from { transform: scale(0.95); opacity: 0; }
-    to   { transform: scale(1); opacity: 1; }
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(.96) }
+  to   { opacity: 1; transform: scale(1) }
 }
 
 .editor-header {
-    background: rgba(0, 0, 0, 0.4);
-    padding: 30px;
-    border-bottom: 1px solid rgba(255, 98, 0, 0.3);
-    position: relative;
-}
-
-.editor-header::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; width: 40px; height: 3px;
-    background: #FF6200;
-    box-shadow: 0 0 10px rgba(255, 98, 0, 0.5);
-}
-
-.editor-header h1 {
-    font-family: 'Panchang', sans-serif;
-    font-weight: 700;
-    font-size: 24px;
-    letter-spacing: 2px;
-    color: #fff;
-    margin-bottom: 5px;
-}
-
-.editor-header p {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.5);
-    text-transform: uppercase;
-    letter-spacing: 1px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--spz-line);
+  background: var(--spz-surface-2);
+  flex-shrink: 0;
 }
 
 .editor-preview-section {
-    padding: 30px;
-    background: rgba(255, 255, 255, 0.02);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
+  padding: 18px 20px;
+  background: var(--spz-bg);
+  border-bottom: 1px solid var(--spz-line);
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  flex-shrink: 0;
 }
 
-.preview-label {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: #FF6200;
-    text-transform: uppercase;
-}
-
-#editor-preview-container {
-    width: 300px;
-    height: 60px;
-    position: relative;
-}
+#editor-preview-container { width: 300px; height: 60px; position: relative; }
 
 .editor-form {
-    padding: 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.input-group label {
-    font-size: 9px;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.4);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
-
-.input-group input {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 12px 15px;
-    color: #fff;
-    font-family: 'Outfit', sans-serif;
-    font-size: 13px;
-    outline: none;
-    transition: all 0.2s ease;
-}
-
-.input-group input:focus {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 98, 0, 0.5);
-}
-
-.btn-secondary {
-    background: rgba(255, 255, 255, 0.08);
-    border: none;
-    color: rgba(255, 255, 255, 0.8);
-    padding: 8px 12px;
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    cursor: pointer;
-    align-self: flex-start;
-    transition: all 0.2s ease;
-}
-
-.btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: #fff;
+  padding: 18px 20px;
+  display: flex; flex-direction: column; gap: 16px;
+  overflow-y: auto;
 }
 
 .editor-footer {
-    margin-top: 10px;
-    display: flex;
-    gap: 15px;
-    justify-content: flex-end;
-}
-
-.editor-footer button {
-    padding: 12px 25px;
-    font-family: 'Panchang', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    cursor: pointer;
-    border: none;
-    transition: all 0.2s ease;
-}
-
-.btn-danger {
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.6);
-}
-
-.btn-danger:hover {
-    background: rgba(255, 0, 0, 0.2);
-    color: #fff;
-}
-
-.btn-success {
-    background: #FF6200;
-    color: #fff;
-    box-shadow: 0 4px 15px rgba(255, 98, 0, 0.3);
-}
-
-.btn-success:hover {
-    background: #ff7726;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 98, 0, 0.4);
-}
-
-/* --- Self Nametag Container --- */
-#self-nametag-container {
-    position: fixed;
-    top: 30px;
-    right: 30px;
-    z-index: 100;
-    pointer-events: none;
-    animation: self-tag-slide 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-@keyframes self-tag-slide {
-    from { transform: translateX(50px); opacity: 0; }
-    to   { transform: translateX(0); opacity: 1; }
-}
-
-#self-nametag-container .nametag-card {
-    position: relative; /* Not absolute like in world render */
-    transform: none !important;
-    opacity: 1 !important;
-    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));
-}
-
-/* Animations */
-@keyframes modalIn {
-    from { opacity: 0; transform: translate(0, 20px); }
-    to { opacity: 1; transform: translate(0, 0); }
-}
-
-#editor-screen.active .editor-modal {
-    animation: modalIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-/* Animations */
-@keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.8) translate(-50%, -100%); }
-    to { opacity: 1; transform: scale(1) translate(-50%, -100%); }
-}
-
-.nametag.new {
-    animation: fadeIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  padding: 12px 20px;
+  border-top: 1px solid var(--spz-line);
+  background: var(--spz-surface-2);
+  display: flex; justify-content: flex-end; gap: 8px;
+  flex-shrink: 0;
 }

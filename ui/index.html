@@ -1,67 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SPiceZ Nametags</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        @font-face {
-            font-family: 'Panchang';
-            src: url('../../spz-poll/ui/public/fonts/Panchang-Bold.ttf') format('truetype');
-            font-weight: 700;
-        }
-        @font-face {
-            font-family: 'Panchang';
-            src: url('../../spz-poll/ui/public/fonts/Panchang-Regular.ttf') format('truetype');
-            font-weight: 400;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SPZ · Nametags</title>
+<link rel="stylesheet" href="../../spz-ui/components/styles/spz-ui.css">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="self-nametag-container">
-        <!-- Self nametag will be injected here -->
-    </div>
 
-    <div id="nametag-container">
-        <!-- Other nametags will be injected here -->
-    </div>
+<!-- Self nametag (top-right HUD) -->
+<div id="self-nametag-container"></div>
 
-    <div id="editor-screen" style="display:none">
-        <div class="editor-modal">
-            <div class="editor-header">
-                <h1>EDIT NAMETAG</h1>
-                <p>Customize your presence on the track</p>
-            </div>
+<!-- World-space nametags -->
+<div id="nametag-container"></div>
 
-            <div class="editor-preview-section">
-                <div class="preview-label">LIVE PREVIEW</div>
-                <div id="editor-preview-container">
-                    <!-- Preview nametag injected here -->
-                </div>
-            </div>
+<!-- Editor modal — uses spz-ui classes, DOM IDs kept for script.js -->
+<div id="editor-screen" style="display:none">
+  <div class="editor-backdrop"></div>
 
-            <div class="editor-form">
-                <div class="input-group">
-                    <label>AVATAR URL (PNG/JPG)</label>
-                    <input type="text" id="input-avatar" placeholder="https://cdn.discordapp.com/...">
-                    <button id="btn-fetch-discord" class="btn-secondary">USE DISCORD AVATAR</button>
-                </div>
+  <div class="spz-card editor-modal">
 
-                <div class="input-group">
-                    <label>BANNER URL (PNG/JPG/GIF)</label>
-                    <input type="text" id="input-banner" placeholder="https://cdn.discordapp.com/...">
-                </div>
-
-                <div class="editor-footer">
-                    <button id="btn-cancel" class="btn-danger">CANCEL</button>
-                    <button id="btn-save" class="btn-success">SAVE CHANGES</button>
-                </div>
-            </div>
+    <!-- Header -->
+    <div class="editor-header">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="color:var(--spz-orange);display:flex"><i data-lucide="pencil" style="width:16px;height:16px"></i></span>
+        <div>
+          <h1 class="spz-card-title" style="font-size:15px">Edit Nametag</h1>
+          <div class="spz-card-desc">Customize your presence on track</div>
         </div>
+      </div>
+      <button class="spz-btn" data-variant="ghost" data-size="icon" id="btn-cancel-x">
+        <i data-lucide="x" style="width:14px;height:14px"></i>
+      </button>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Live preview -->
+    <div class="editor-preview-section">
+      <div class="spz-eyebrow" style="margin-bottom:10px;display:flex;align-items:center;gap:6px">
+        <i data-lucide="eye" style="width:12px;height:12px"></i>
+        Live Preview
+      </div>
+      <div id="editor-preview-container"></div>
+    </div>
+
+    <!-- Form -->
+    <div class="editor-form">
+
+      <div class="spz-input-group">
+        <label class="spz-label" for="input-avatar">
+          <span style="display:flex;align-items:center;gap:5px">
+            <i data-lucide="image" style="width:11px;height:11px"></i>
+            Avatar URL
+          </span>
+        </label>
+        <input type="text" id="input-avatar" class="spz-input" placeholder="https://cdn.discordapp.com/avatars/…" />
+        <button id="btn-fetch-discord" class="spz-btn" data-variant="outline" style="width:100%;margin-top:4px">
+          <i data-lucide="link" style="width:14px;height:14px"></i>
+          Use Discord Avatar
+        </button>
+      </div>
+
+      <div class="spz-input-group" style="margin-top:14px">
+        <label class="spz-label" for="input-banner">
+          <span style="display:flex;align-items:center;gap:5px">
+            <i data-lucide="image" style="width:11px;height:11px"></i>
+            Banner URL
+          </span>
+        </label>
+        <input type="text" id="input-banner" class="spz-input" placeholder="https://cdn.discordapp.com/banners/…" />
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="editor-footer">
+      <button id="btn-cancel" class="spz-btn" data-variant="ghost">
+        <i data-lucide="x" style="width:14px;height:14px"></i>
+        Cancel
+      </button>
+      <button id="btn-save" class="spz-btn" data-variant="primary">
+        <i data-lucide="check" style="width:14px;height:14px"></i>
+        Save Changes
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="script.js"></script>
+<script>
+  document.getElementById('btn-cancel-x').addEventListener('click', function() {
+    document.getElementById('btn-cancel').click();
+  });
+  lucide.createIcons();
+</script>
 </body>
 </html>
