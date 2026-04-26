@@ -4,97 +4,164 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SPZ · Nametags</title>
-<link rel="stylesheet" href="../../spz-ui/components/styles/spz-ui.css">
+<link rel="stylesheet" href="spz-ui.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div id="root"></div>
 
-<!-- Self nametag (top-right HUD) -->
-<div id="self-nametag-container"></div>
-
-<!-- World-space nametags -->
-<div id="nametag-container"></div>
-
-<!-- Editor modal — uses spz-ui classes, DOM IDs kept for script.js -->
-<div id="editor-screen" style="display:none">
-  <div class="editor-backdrop"></div>
-
-  <div class="spz-card editor-modal">
-
-    <!-- Header -->
-    <div class="editor-header">
-      <div style="display:flex;align-items:center;gap:10px">
-        <span style="color:var(--spz-orange);display:flex"><i data-lucide="pencil" style="width:16px;height:16px"></i></span>
-        <div>
-          <h1 class="spz-card-title" style="font-size:15px">Edit Nametag</h1>
-          <div class="spz-card-desc">Customize your presence on track</div>
-        </div>
-      </div>
-      <button class="spz-btn" data-variant="ghost" data-size="icon" id="btn-cancel-x">
-        <i data-lucide="x" style="width:14px;height:14px"></i>
-      </button>
-    </div>
-
-    <!-- Live preview -->
-    <div class="editor-preview-section">
-      <div class="spz-eyebrow" style="margin-bottom:10px;display:flex;align-items:center;gap:6px">
-        <i data-lucide="eye" style="width:12px;height:12px"></i>
-        Live Preview
-      </div>
-      <div id="editor-preview-container"></div>
-    </div>
-
-    <!-- Form -->
-    <div class="editor-form">
-
-      <div class="spz-input-group">
-        <label class="spz-label" for="input-avatar">
-          <span style="display:flex;align-items:center;gap:5px">
-            <i data-lucide="image" style="width:11px;height:11px"></i>
-            Avatar URL
-          </span>
-        </label>
-        <input type="text" id="input-avatar" class="spz-input" placeholder="https://cdn.discordapp.com/avatars/…" />
-        <button id="btn-fetch-discord" class="spz-btn" data-variant="outline" style="width:100%;margin-top:4px">
-          <i data-lucide="link" style="width:14px;height:14px"></i>
-          Use Discord Avatar
-        </button>
-      </div>
-
-      <div class="spz-input-group" style="margin-top:14px">
-        <label class="spz-label" for="input-banner">
-          <span style="display:flex;align-items:center;gap:5px">
-            <i data-lucide="image" style="width:11px;height:11px"></i>
-            Banner URL
-          </span>
-        </label>
-        <input type="text" id="input-banner" class="spz-input" placeholder="https://cdn.discordapp.com/banners/…" />
-      </div>
-
-    </div>
-
-    <!-- Footer -->
-    <div class="editor-footer">
-      <button id="btn-cancel" class="spz-btn" data-variant="ghost">
-        <i data-lucide="x" style="width:14px;height:14px"></i>
-        Cancel
-      </button>
-      <button id="btn-save" class="spz-btn" data-variant="primary">
-        <i data-lucide="check" style="width:14px;height:14px"></i>
-        Save Changes
-      </button>
-    </div>
-
-  </div>
-</div>
-
+<script src="https://unpkg.com/preact@latest/dist/preact.min.js"></script>
+<script src="https://unpkg.com/preact@latest/hooks/dist/hooks.umd.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin></script>
 <script src="https://unpkg.com/lucide@latest"></script>
-<script src="script.js"></script>
-<script>
-  document.getElementById('btn-cancel-x').addEventListener('click', function() {
-    document.getElementById('btn-cancel').click();
-  });
-  lucide.createIcons();
+
+<script type="text/babel" src="components.jsx"></script>
+
+<script type="text/babel">
+/** @jsx h */
+const { h, render, Fragment } = preact;
+const { useState, useEffect, useRef, useCallback } = preactHooks;
+
+function Nametag({ data, x, y, scale, opacity, isStatic = false }) {
+  const licenseClass = data.licenseClass || 'D';
+  const avatarUrl = data.avatar || "https://i.imgur.com/8NzA8m8.png";
+
+  const style = isStatic ? {} : {
+    left: `${x}%`,
+    top: `${y}%`,
+    opacity: opacity,
+    transform: `translate(-50%, -100%) scale(${scale})`,
+    position: 'absolute'
+  };
+
+  return (
+    <div className={isStatic ? '' : 'nametag'} style={style}>
+      <div className="nametag-card">
+        <div className="bg-num">{licenseClass}</div>
+        {data.banner && <img className="nametag-banner" src={data.banner} style={{ display: 'block' }} />}
+        <div className="nametag-content">
+          <div className="nametag-avatar-container">
+            <img className="nametag-avatar" src={avatarUrl} />
+            {data.isTalking && <div className="talking-indicator" style={{ display: 'block' }} />}
+          </div>
+          <div className="nametag-details">
+            <div className="nametag-top">
+              {data.crew && <span className="nametag-crew">[{data.crew}]</span>}
+              <span className="nametag-name">{data.name || "Unknown"}</span>
+            </div>
+            <div className="nametag-bottom">
+              <div className={`nametag-license license-${licenseClass}`}>{data.license || "D-5"}</div>
+            </div>
+          </div>
+        </div>
+        {data.isRacing && <div className="racing-glow" style={{ display: 'block' }} />}
+      </div>
+    </div>
+  );
+}
+
+function Editor({ data, onSave, onCancel }) {
+  const [avatar, setAvatar] = useState(data.avatar || '');
+  const [banner, setBanner] = useState(data.banner || '');
+
+  const fetchDiscord = () => {
+    fetch(`https://${GetParentResourceName()}/fetchDiscord`, { method: 'POST', body: JSON.stringify({}) })
+      .then(r => r.json()).then(d => { if (d.avatar) setAvatar(d.avatar); });
+  };
+
+  const previewData = { ...data, avatar, banner };
+
+  return (
+    <div className="editor-screen active" style={{ display: 'flex' }}>
+      <div className="editor-backdrop" onClick={onCancel} />
+      <Card className="editor-modal">
+        <div className="editor-header">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span style={{ color: 'var(--spz-orange)', display: 'flex' }}><Icon name="pencil" size={16} /></span>
+            <div>
+              <h3 className="spz-card-title" style={{ fontSize: 15 }}>Edit Nametag</h3>
+              <div className="spz-card-desc">Customize your presence on track</div>
+            </div>
+          </div>
+          <button className="spz-btn" data-variant="ghost" data-size="icon" onClick={onCancel}>
+            <Icon name="x" size={14} />
+          </button>
+        </div>
+
+        <div className="editor-preview-section">
+          <div className="spz-eyebrow" style={{ marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Icon name="eye" size={12} /> Live Preview
+          </div>
+          <div style={{ width: 300, height: 60, position: 'relative' }}>
+            <Nametag data={previewData} isStatic={true} />
+          </div>
+        </div>
+
+        <div className="editor-form">
+          <Field label="Avatar URL">
+            <Input value={avatar} onInput={e => setAvatar(e.target.value)} placeholder="https://..." />
+            <Button variant="outline" style={{ width: '100%', marginTop: 4 }} icon="link" onClick={fetchDiscord}>Use Discord Avatar</Button>
+          </Field>
+          <Field label="Banner URL">
+            <Input value={banner} onInput={e => setBanner(e.target.value)} placeholder="https://..." />
+          </Field>
+        </div>
+
+        <div className="editor-footer">
+          <Button variant="ghost" icon="x" onClick={onCancel}>Cancel</Button>
+          <Button variant="primary" icon="check" onClick={() => onSave({ avatar, banner })}>Save Changes</Button>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function App() {
+  const [worldTags, setWorldTags] = useState([]);
+  const [selfTag, setSelfTag] = useState(null);
+  const [editorData, setEditorData] = useState(null);
+
+  useEffect(() => {
+    const handler = (e) => {
+      const { action, payload, nametags: data } = e.data;
+      if (action === 'update') setWorldTags(data || []);
+      else if (action === 'updateSelf') setSelfTag(payload);
+      else if (action === 'clear') { setWorldTags([]); setSelfTag(null); }
+      else if (action === 'openEditor') setEditorData(payload);
+    };
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, []);
+
+  const save = (data) => {
+    fetch(`https://${GetParentResourceName()}/saveNametag`, { method: 'POST', body: JSON.stringify(data) });
+    setEditorData(null);
+    fetch(`https://${GetParentResourceName()}/closeEditor`, { method: 'POST' });
+  };
+
+  const cancel = () => {
+    setEditorData(null);
+    fetch(`https://${GetParentResourceName()}/closeEditor`, { method: 'POST' });
+  };
+
+  return (
+    <Fragment>
+      <div id="nametag-container">
+        {worldTags.map(tag => <Nametag key={tag.id} {...tag} />)}
+      </div>
+
+      {selfTag && (
+        <div id="self-nametag-container">
+          <Nametag data={selfTag} isStatic={true} />
+        </div>
+      )}
+
+      {editorData && <Editor data={editorData} onSave={save} onCancel={cancel} />}
+    </Fragment>
+  );
+}
+
+render(<App />, document.getElementById('root'));
 </script>
 </body>
 </html>
