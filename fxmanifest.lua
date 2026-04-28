@@ -2,7 +2,7 @@ fx_version 'cerulean'
 game 'gta5'
 
 description 'SPiceZ-Core â€” Dynamic Racing Nametags'
-version '1.1.5'
+version '1.1.6'
 
 ui_page 'ui/dist/index.html'
 
