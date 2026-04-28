@@ -1,4 +1,4 @@
-﻿fx_version 'cerulean'
+fx_version 'cerulean'
 game 'gta5'
 
 description 'SPiceZ-Core â€” Dynamic Racing Nametags'
