@@ -12,17 +12,13 @@ local function GetPlayerData(serverId)
     end
 
     local p = Player(serverId).state
-    local rawName = p['spz:name'] or GetPlayerName(serverId) or "Racer"
-    if rawName == "**INVALID**" then rawName = GetPlayerName(serverId) or "Racer" end
-    if rawName == "**INVALID**" then rawName = "Racer" end
-
     local data = {
-        name = rawName,
-        crew = p['spz:crew'],
-        license = p['spz:license'],
-        licenseClass = p['spz:licenseClass'],
-        avatar = p['spz:avatar'],
-        banner = p['spz:banner'],
+        name = p['username'] or GetPlayerName(serverId) or "Racer",
+        crew = p['crewTag'],
+        license = p['rank'],
+        licenseClass = ({"C", "B", "A", "S"})[(p['licenseTier'] or 0) + 1],
+        avatar = p['avatarUrl'],
+        banner = p['bannerUrl'],
         isRacing = p['spz:is_racing'] or false
     }
 
@@ -167,12 +163,17 @@ CreateThread(function()
 end)
 
 -- State Bag Listeners for real-time updates
-AddStateBagChangeHandler('spz:name', nil, function(bagName, key, value)
+AddStateBagChangeHandler('username', nil, function(bagName, key, value)
     local src = tonumber(bagName:gsub('player:', ''))
     if PlayerDataCache[src] then PlayerDataCache[src].lastUpdate = 0 end
 end)
 
-AddStateBagChangeHandler('spz:license', nil, function(bagName, key, value)
+AddStateBagChangeHandler('rank', nil, function(bagName, key, value)
+    local src = tonumber(bagName:gsub('player:', ''))
+    if PlayerDataCache[src] then PlayerDataCache[src].lastUpdate = 0 end
+end)
+
+AddStateBagChangeHandler('licenseTier', nil, function(bagName, key, value)
     local src = tonumber(bagName:gsub('player:', ''))
     if PlayerDataCache[src] then PlayerDataCache[src].lastUpdate = 0 end
 end)
