@@ -48,7 +48,7 @@ function Nametag({
   opacity?: number
   isStatic?: boolean
 }) {
-  const licenseClass = (data.licenseClass || 'C').toLowerCase()
+  const licenseClass = data.licenseClass || 'D'
   const avatarUrl = data.avatar || 'https://i.imgur.com/8NzA8m8.png'
   const style = isStatic
     ? {}
@@ -56,24 +56,25 @@ function Nametag({
 
   return (
     <div class={isStatic ? '' : 'nametag'} style={style}>
-      <div class="nametag-revamp">
-        <img class="nametag-bg" src={`assets/nametags/${licenseClass}.webp`} />
-        <div class="nametag-overlay">
-          <div class="nametag-avatar-wrapper">
-            <img class="nametag-avatar-v2" src={avatarUrl} />
-            {data.isTalking && <div class="talking-ring" />}
+      <div class="nametag-card">
+        <div class="bg-num">{licenseClass}</div>
+        {data.banner && <img class="nametag-banner-img" src={data.banner} />}
+        <div class="nametag-content">
+          <div class="nametag-avatar-container">
+            <img class="nametag-avatar" src={avatarUrl} />
+            {data.isTalking && <div class="talking-indicator" />}
           </div>
-          <div class="nametag-info">
-            <div class="nametag-main-line">
-              {data.crew && <span class="tag-crew">[{data.crew}]</span>}
-              <span class="tag-name">{data.name || 'Unknown'}</span>
+          <div class="nametag-details">
+            <div class="nametag-top">
+              {data.crew && <span class="nametag-crew">[{data.crew}]</span>}
+              <span class="nametag-name">{data.name || 'Unknown'}</span>
             </div>
-            <div class="tag-sub-line">
-              <span class="tag-rank">{data.license || 'C-5'}</span>
-              {data.isRacing && <span class="tag-racing">RACING</span>}
+            <div>
+              <div class={`nametag-license license-${licenseClass}`}>{data.license || 'D-5'}</div>
             </div>
           </div>
         </div>
+        {data.isRacing && <div class="racing-glow" />}
       </div>
     </div>
   )
