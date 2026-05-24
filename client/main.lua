@@ -47,7 +47,7 @@ if Config.Keybind.enabled then
     RegisterKeyMapping(Config.Keybind.command, Config.Keybind.description, "keyboard", Config.Keybind.key)
 end
 
--- Editor Command
+-- Editor Command and Presets Loading
 RegisterCommand("editnametag", function()
     local data = GetPlayerData(MyId)
     if not data then return end
@@ -55,7 +55,11 @@ RegisterCommand("editnametag", function()
     SetNuiFocus(true, true)
     SendNUIMessage({
         action = "openEditor",
-        payload = data
+        payload = data,
+        presets = {
+            banners = Config.PresetBanners or {},
+            avatars = Config.PresetAvatars or {}
+        }
     })
 end)
 
@@ -72,12 +76,43 @@ RegisterNUICallback("saveNametag", function(data, cb)
 end)
 
 RegisterNUICallback("fetchDiscord", function(data, cb)
-    -- We'll call a server event to get the discord avatar
-    -- Since we can't do it directly here, we use a callback
     exports['spz-lib']:TriggerCallback('spz-nametag:getDiscordAvatar', function(avatar)
         cb({ avatar = avatar })
     end)
 end)
+
+-- Performance Cache & Throttling
+local PlayerVisibilityCache = {}
+
+local function GetPlayerVisibility(serverId, ped, myPed, dist)
+    if dist <= 5.0 then return true end
+
+    local now = GetGameTimer()
+    local cached = PlayerVisibilityCache[serverId]
+    if cached and (now - cached.lastCheck < (Config.RaycastThrottle or 200)) then
+        return cached.visible
+    end
+
+    local isVisible = HasEntityClearLosToEntity(myPed, ped, 17)
+    PlayerVisibilityCache[serverId] = {
+        visible = isVisible,
+        lastCheck = now
+    }
+    return isVisible
+end
+
+local function GetVehicleName(ped)
+    local veh = GetVehiclePedIsIn(ped, false)
+    if veh == 0 then return nil end
+    local model = GetEntityModel(veh)
+    local modelName = GetDisplayNameFromVehicleModel(model)
+    local label = GetLabelText(modelName)
+    if label == "NULL" then
+        return modelName
+    else
+        return label
+    end
+end
 
 -- Main Render Loop
 CreateThread(function()
@@ -103,15 +138,11 @@ CreateThread(function()
                         local data = GetPlayerData(serverId)
                         
                         if data then
-                            -- Visibility check (Raycast) - Throttled for performance
-                            local isVisible = true
-                            if dist > 5.0 then -- Always show if very close
-                                isVisible = HasEntityClearLosToEntity(myPed, ped, 17)
-                            end
+                            -- Optimized Raycast check with throttling
+                            local isVisible = GetPlayerVisibility(serverId, ped, myPed, dist)
 
                             if isVisible then
                                 -- Project world to screen
-                                -- Offset for vehicle or head
                                 local offset = IsPedInAnyVehicle(ped, false) and 1.2 or 1.0
                                 local onScreen, x, y = GetScreenCoordFromWorldCoord(pos.x, pos.y, pos.z + offset)
 
@@ -124,6 +155,12 @@ CreateThread(function()
 
                                     local isTalking = MumbleIsPlayerTalking(player)
 
+                                    -- Fetch vehicle details if driving
+                                    local vehicleName = nil
+                                    if Config.ShowVehicleName and IsPedInAnyVehicle(ped, false) then
+                                        vehicleName = GetVehicleName(ped)
+                                    end
+
                                     table.insert(payload, {
                                         id = serverId,
                                         x = x * 100,
@@ -131,6 +168,8 @@ CreateThread(function()
                                         scale = scale,
                                         opacity = opacity,
                                         isTalking = isTalking,
+                                        distance = Config.ShowDistance and math.floor(dist) or nil,
+                                        vehicleName = vehicleName,
                                         data = data
                                     })
                                 end
@@ -165,6 +204,7 @@ CreateThread(function()
         Wait(wait)
     end
 end)
+
 
 -- State Bag Listeners for real-time updates
 AddStateBagChangeHandler('spz:name', nil, function(bagName, key, value)
