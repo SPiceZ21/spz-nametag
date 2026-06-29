@@ -6,6 +6,8 @@ version '1.1.6'
 
 ui_page 'ui/dist/index.html'
 
+shared_script '@ox_lib/init.lua'
+
 files {
     'ui/dist/**/*',
 }
