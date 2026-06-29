@@ -40,7 +40,7 @@ RegisterCommand(Config.Keybind.command, function()
     if not ShowNametags then
         SendNUIMessage({ action = "clear" })
     end
-    exports['spz-lib']:Notify(string.format("Nametags: %s", ShowNametags and "ENABLED" or "DISABLED"), ShowNametags and "info" or "warning")
+    lib.notify({ description = string.format("Nametags: %s", ShowNametags and "ENABLED" or "DISABLED"), type = ShowNametags and "info" or "warning" })
 end)
 
 if Config.Keybind.enabled then
@@ -76,7 +76,7 @@ RegisterNUICallback("saveNametag", function(data, cb)
 end)
 
 RegisterNUICallback("fetchDiscord", function(data, cb)
-    exports['spz-lib']:TriggerCallback('spz-nametag:getDiscordAvatar', function(avatar)
+    lib.callback('spz-nametag:getDiscordAvatar', false, function(avatar)
         cb({ avatar = avatar })
     end)
 end)

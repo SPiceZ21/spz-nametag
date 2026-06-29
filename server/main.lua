@@ -49,7 +49,7 @@ RegisterNetEvent("spz-nametag:saveSettings", function(data)
 end)
 
 -- Discord Avatar Fetch Callback
-exports['spz-lib']:RegisterServerCallback('spz-nametag:getDiscordAvatar', function(source, cb)
+lib.callback.register('spz-nametag:getDiscordAvatar', function(source)
     local discordId = nil
     for i = 0, GetNumPlayerIdentifiers(source) - 1 do
         local id = GetPlayerIdentifier(source, i)
@@ -62,9 +62,9 @@ exports['spz-lib']:RegisterServerCallback('spz-nametag:getDiscordAvatar', functi
     if discordId then
         -- Using unavatar.io as a reliable proxy for Discord avatars
         local url = string.format("https://unavatar.io/discord/%s", discordId)
-        cb(url)
+        return url
     else
-        cb(nil)
+        return nil
     end
 end)
 

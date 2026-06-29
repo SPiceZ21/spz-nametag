@@ -20,6 +20,6 @@ server_scripts {
     'server/main.lua'
 }
 
-dependency 'spz-lib'
+dependency 'ox_lib'
 dependency 'spz-core'
 
