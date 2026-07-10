@@ -29,70 +29,77 @@
 }
 
 /* Futuristic skewed card design */
+/* ── PUBG-style horizontal name banner ─────────────────────── */
 .nametag-card {
+  --nt-accent: #71717a;
   position: relative;
-  transform: skewX(-8deg);
-  background: rgba(9, 10, 13, 0.94);
+  display: flex;
+  align-items: stretch;
+  min-width: 190px;
+  background: rgba(12, 14, 18, 0.82);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 5px;
+  border-radius: 3px;
   overflow: hidden;
-  min-width: 195px;
   backdrop-filter: blur(8px);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.65);
-  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 0;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+  transition: box-shadow 0.2s ease;
 }
 
-/* Un-skew the internal content to maintain crisp text alignment */
-.nametag-banner, 
-.nametag-content,
-.bg-num {
-  transform: skewX(8deg);
+/* Faint profile banner behind content (PUBG profile-banner vibe) */
+.nametag-banner {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.20;
+  z-index: 0;
+  border: none;
+  transform: none;
+}
+/* Dark scrim over the banner so the name stays readable */
+.nametag-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(12,14,18,0.92) 0%, rgba(12,14,18,0.5) 100%);
+  z-index: 1;
+  pointer-events: none;
 }
 
 .bg-num {
   position: absolute;
-  right: 6px;
-  bottom: -6px;
+  right: 8px;
+  bottom: -8px;
   font-family: var(--font-primary);
-  font-size: 52px;
+  font-size: 46px;
   font-weight: 900;
-  color: rgba(255, 255, 255, 0.03);
-  line-height: 1;
-  pointer-events: none;
   font-style: italic;
-}
-
-/* Customizable Banners (Images or CSS Gradients) */
-.nametag-banner {
-  width: 100%;
-  height: 26px;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  display: block;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.05);
+  line-height: 1;
+  z-index: 1;
+  pointer-events: none;
+  transform: none;
 }
 
 .nametag-content {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
+  gap: 9px;
+  padding: 7px 12px 7px 10px;
   position: relative;
   z-index: 2;
+  width: 100%;
+  transform: none;
 }
 
-.nametag-avatar-container { 
-  position: relative; 
-  flex-shrink: 0;
-}
-
+.nametag-avatar-container { position: relative; flex-shrink: 0; }
 .nametag-avatar {
-  width: 38px;
-  height: 38px;
-  border-radius: 4px;
-  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  width: 34px;
+  height: 34px;
+  border-radius: 3px;
+  border: 1.5px solid var(--nt-accent);
   object-fit: cover;
   display: block;
 }
@@ -112,8 +119,8 @@
   width: 17px;
   box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.15);
+  z-index: 3;
 }
-
 .audio-equalizer .bar {
   width: 2px;
   height: 100%;
@@ -122,53 +129,55 @@
   transform-origin: bottom;
   animation: equalize-bounce 0.8s ease-in-out infinite alternate;
 }
-
 .audio-equalizer .bar:nth-child(1) { animation-duration: 0.5s; animation-delay: 0.1s; }
 .audio-equalizer .bar:nth-child(2) { animation-duration: 0.8s; animation-delay: 0.3s; }
 .audio-equalizer .bar:nth-child(3) { animation-duration: 0.6s; animation-delay: 0.0s; }
 .audio-equalizer .bar:nth-child(4) { animation-duration: 0.7s; animation-delay: 0.2s; }
-
 @keyframes equalize-bounce {
-  0% { transform: scaleY(0.2); }
+  0%   { transform: scaleY(0.2); }
   100% { transform: scaleY(1.0); }
 }
 
-.nametag-details { 
-  display: flex; 
-  flex-direction: column; 
-  gap: 1px;
+.nametag-details {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
   width: 100%;
 }
 
-.nametag-top { 
-  display: flex; 
-  align-items: center; 
-  gap: 5px; 
+.nametag-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
-
 .nametag-crew {
   font-family: var(--font-mono);
   font-size: 10px;
-  color: var(--color-primary);
-  font-weight: 700;
+  color: var(--nt-accent);
+  font-weight: 800;
 }
-
 .nametag-name {
   font-family: var(--font-primary);
-  font-weight: 700;
-  font-size: 12px;
-  color: #ffffff;
+  font-weight: 800;
+  font-size: 13px;
+  color: #fff;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  letter-spacing: 0.05em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
-/* Telemetry Section */
+/* PUBG-style thin accent bar under the name row */
+.nametag-name-accent,
+.nametag-top::after {
+  content: '';
+}
+
 .nametag-telemetry {
   display: flex;
   align-items: center;
-  gap: 5px;
-  margin-top: 3px;
+  gap: 6px;
+  padding-top: 3px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
   width: 100%;
 }
 
@@ -181,9 +190,7 @@
   display: inline-block;
   text-transform: uppercase;
   letter-spacing: 0.02em;
-  text-shadow: none;
 }
-
 .license-S { background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); color: #000; }
 .license-A { background: linear-gradient(135deg, #FF6200 0%, #FF3E00 100%); color: #000; }
 .license-B { background: linear-gradient(135deg, #00A3FF 0%, #0066FF 100%); color: #fff; }
@@ -205,26 +212,22 @@
   overflow: hidden;
   white-space: nowrap;
 }
-
-.nametag-vehicle svg {
-  flex-shrink: 0;
-}
+.nametag-vehicle svg { flex-shrink: 0; }
 
 .nametag-distance {
   font-family: var(--font-mono);
   font-size: 9px;
-  color: var(--color-primary);
-  font-weight: 700;
+  color: var(--nt-accent);
+  font-weight: 800;
   margin-left: auto;
 }
 
-/* Rank-Specific Glowing Metallic Borders */
-.license-border-S { border-color: rgba(255, 215, 0, 0.35); box-shadow: 0 4px 14px rgba(255, 215, 0, 0.08); }
-.license-border-A { border-color: rgba(255, 98, 0, 0.35); box-shadow: 0 4px 14px rgba(255, 98, 0, 0.08); }
-.license-border-B { border-color: rgba(0, 163, 255, 0.35); box-shadow: 0 4px 14px rgba(0, 163, 255, 0.08); }
-.license-border-C { border-color: rgba(41, 211, 152, 0.35); box-shadow: 0 4px 14px rgba(41, 211, 152, 0.08); }
-.license-border-D { border-color: rgba(113, 113, 122, 0.3); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2); }
-
+/* Per-class accent colour drives border, avatar, crew, distance */
+.license-border-S { --nt-accent: #FFD700; border-color: rgba(255, 215, 0, 0.35); box-shadow: 0 6px 20px rgba(255, 215, 0, 0.10); }
+.license-border-A { --nt-accent: #FF6200; border-color: rgba(255, 98, 0, 0.35);  box-shadow: 0 6px 20px rgba(255, 98, 0, 0.10); }
+.license-border-B { --nt-accent: #00A3FF; border-color: rgba(0, 163, 255, 0.35); box-shadow: 0 6px 20px rgba(0, 163, 255, 0.10); }
+.license-border-C { --nt-accent: #29D398; border-color: rgba(41, 211, 152, 0.35);box-shadow: 0 6px 20px rgba(41, 211, 152, 0.10); }
+.license-border-D { --nt-accent: #71717a; border-color: rgba(113, 113, 122, 0.3);box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); }
 /* Hyper-Speed racing glow wrapped around card */
 .racing-glow {
   position: absolute;
