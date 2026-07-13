@@ -40,7 +40,6 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 3px;
   overflow: hidden;
-  backdrop-filter: blur(8px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
   transition: box-shadow 0.2s ease;
 }
@@ -259,7 +258,6 @@
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(8px);
 }
 
 .editor-modal {
