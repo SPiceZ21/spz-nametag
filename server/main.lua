@@ -33,41 +33,6 @@ AddEventHandler("SPZ:syncProfile", function(source, changes)
     SyncPlayerToState(source)
 end)
 
--- Save customized settings
-RegisterNetEvent("spz-nametag:saveSettings", function(data)
-    local source = source
-    local profile = exports["spz-identity"]:GetProfile(source)
-    if not profile then return end
-
-    -- Update profile with new avatar and banner for persistence
-    exports["spz-identity"]:UpdateProfile(source, {
-        avatar_url = data.avatar,
-        banner_url = data.banner
-    })
-
-    print(string.format("[spz-nametag] Saved customized settings for %s", GetPlayerName(source)))
-end)
-
--- Discord Avatar Fetch Callback
-lib.callback.register('spz-nametag:getDiscordAvatar', function(source)
-    local discordId = nil
-    for i = 0, GetNumPlayerIdentifiers(source) - 1 do
-        local id = GetPlayerIdentifier(source, i)
-        if string.sub(id, 1, 8) == "discord:" then
-            discordId = string.sub(id, 9)
-            break
-        end
-    end
-
-    if discordId then
-        -- Using unavatar.io as a reliable proxy for Discord avatars
-        local url = string.format("https://unavatar.io/discord/%s", discordId)
-        return url
-    else
-        return nil
-    end
-end)
-
 -- Initial sync for players already online (resource restart)
 CreateThread(function()
     Wait(500)

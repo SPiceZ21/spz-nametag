@@ -47,40 +47,6 @@ if Config.Keybind.enabled then
     RegisterKeyMapping(Config.Keybind.command, Config.Keybind.description, "keyboard", Config.Keybind.key)
 end
 
--- Editor Command and Presets Loading
-RegisterCommand("editnametag", function()
-    local data = GetPlayerData(MyId)
-    if not data then return end
-    
-    SetNuiFocus(true, true)
-    SendNUIMessage({
-        action = "openEditor",
-        payload = data,
-        presets = {
-            banners = Config.PresetBanners or {},
-            avatars = Config.PresetAvatars or {}
-        }
-    })
-end)
-
--- NUI Callbacks
-RegisterNUICallback("closeEditor", function(data, cb)
-    SetNuiFocus(false, false)
-    cb('ok')
-end)
-
-RegisterNUICallback("saveNametag", function(data, cb)
-    SetNuiFocus(false, false)
-    TriggerServerEvent("spz-nametag:saveSettings", data)
-    cb('ok')
-end)
-
-RegisterNUICallback("fetchDiscord", function(data, cb)
-    lib.callback('spz-nametag:getDiscordAvatar', false, function(avatar)
-        cb({ avatar = avatar })
-    end)
-end)
-
 -- Performance Cache & Throttling
 local PlayerVisibilityCache = {}
 
