@@ -77,6 +77,25 @@
 
 /* ── Floating name (no box) + crew tag box ──────────────────── */
 .nt-body { display: flex; align-items: center; gap: 6px; }
+.nt-flag {
+  height: 11px;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  flex-shrink: 0;
+}
+.nt-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 800;
+  font-style: italic;           /* F1 number plate slant */
+  color: #fff;
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 3px;
+  padding: 1px 5px;
+  text-shadow: none;
+  flex-shrink: 0;
+}
 .nt-crew {
   font-family: var(--font-mono);
   font-size: 9px;

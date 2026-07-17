@@ -8,6 +8,8 @@ interface NametagData {
   isTalking?: boolean
   isRacing?: boolean
   license?: string
+  nation?: string      // ISO 3166-1 alpha-2, lowercase
+  raceNumber?: number  // 1-99
 }
 
 interface WorldTag extends NametagData {
@@ -55,10 +57,14 @@ function Nametag({
         {data.isTalking && <AudioEqualizer />}
       </div>
 
-      {/* floating name (no box) + crew tag box */}
+      {/* floating name (no box) + crew tag box + F1-style flag/number */}
       <div class="nt-body">
+        {data.nation && (
+          <img class="nt-flag" src={`flags/${data.nation}.webp`} alt="" />
+        )}
         {data.crew && <span class="nt-crew">{data.crew}</span>}
         <span class="nt-name">{data.name || 'Unknown'}</span>
+        {data.raceNumber != null && <span class="nt-num">{data.raceNumber}</span>}
       </div>
     </div>
   )

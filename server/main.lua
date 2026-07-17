@@ -11,6 +11,8 @@ local function SyncPlayerToState(source)
     playerState:set('spz:crew', profile.crew_tag or "", true)
     playerState:set('spz:license', profile.rank or "D-5", true) -- rank is like D-5, C-1 etc
     playerState:set('spz:licenseClass', string.sub(profile.rank or "D", 1, 1), true)
+    playerState:set('spz:nation', profile.nation, true)          -- ISO alpha-2 (lowercase)
+    playerState:set('spz:raceNumber', profile.race_number, true) -- 1-99, F1 style
     
     -- Profile picture and banner (URL based)
     -- These would ideally be stored in the profile. For now, using placeholders or falling back.
