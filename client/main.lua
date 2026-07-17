@@ -23,6 +23,8 @@ local function GetPlayerData(serverId)
         licenseClass = p['spz:licenseClass'],
         avatar = p['spz:avatar'],
         banner = p['spz:banner'],
+        nation = p['spz:nation'],
+        raceNumber = p['spz:raceNumber'],
         isRacing = p['spz:is_racing'] or false
     }
 
