@@ -12,12 +12,18 @@ local function GetPlayerData(serverId)
     end
 
     local p = Player(serverId).state
-    local rawName = p['spz:name'] or GetPlayerName(serverId) or "Racer"
-    if rawName == "**INVALID**" then rawName = GetPlayerName(serverId) or "Racer" end
-    if rawName == "**INVALID**" then rawName = "Racer" end
+
+    -- Client-side GetPlayerName() takes a LOCAL player index, not a server id —
+    -- passing the server id returns another player's name or "**INVALID**".
+    local localIdx = GetPlayerFromServerId(serverId)
+    local fallback = (localIdx ~= -1) and GetPlayerName(localIdx) or nil
+    if fallback == "**INVALID**" then fallback = nil end
+
+    local stateName = p['spz:name']
+    if stateName == "" then stateName = nil end
 
     local data = {
-        name = rawName,
+        name = stateName or fallback or "Racer",
         crew = p['spz:crew'],
         license = p['spz:license'],
         licenseClass = p['spz:licenseClass'],
@@ -28,10 +34,12 @@ local function GetPlayerData(serverId)
         isRacing = p['spz:is_racing'] or false
     }
 
-    PlayerDataCache[serverId] = {
-        data = data,
-        lastUpdate = GetGameTimer()
-    }
+    -- Only cache once the statebags have actually replicated. Caching a
+    -- fallback would pin "Racer" / a missing rank for DataRefreshInterval and,
+    -- since the entry keeps getting refreshed, effectively forever.
+    if stateName then
+        PlayerDataCache[serverId] = { data = data, lastUpdate = GetGameTimer() }
+    end
 
     return data
 end
