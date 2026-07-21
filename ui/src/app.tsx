@@ -43,8 +43,15 @@ function Nametag({
   opacity?: number
   isStatic?: boolean
 }) {
-  const licenseClass = data.licenseClass || 'D'
-  const rank = data.license || `${licenseClass}-5`
+  const licenseClass = (data.licenseClass && data.licenseClass !== '**INVALID**') ? data.licenseClass : 'D'
+  const rawRank = (data.license && data.license !== '**INVALID**') ? data.license : `${licenseClass}-5`
+  const rank = rawRank.includes('**INVALID**') ? 'D-5' : rawRank
+
+  let displayName = data.name || ''
+  if (!displayName || displayName === '**INVALID**' || displayName.includes('**INVALID**')) {
+    displayName = 'Driver'
+  }
+
   const style = isStatic
     ? {}
     : { left: `${x}%`, top: `${y}%`, opacity, transform: `translate(-50%, -100%) scale(${scale})`, position: 'absolute' as const }
@@ -57,13 +64,12 @@ function Nametag({
         {data.isTalking && <AudioEqualizer />}
       </div>
 
-      {/* floating name (no box) + crew tag box + F1-style flag/number */}
+      {/* floating name (no box) + F1-style flag/number */}
       <div class="nt-body">
         {data.nation && (
           <img class="nt-flag" src={`flags/${data.nation}.webp`} alt="" />
         )}
-        {data.crew && <span class="nt-crew">{data.crew}</span>}
-        <span class="nt-name">{data.name || 'Unknown'}</span>
+        <span class="nt-name">{displayName}</span>
         {data.raceNumber != null && <span class="nt-num">{data.raceNumber}</span>}
       </div>
     </div>
