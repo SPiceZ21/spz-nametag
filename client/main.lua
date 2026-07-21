@@ -17,27 +17,27 @@ local function GetPlayerData(serverId)
     -- passing the server id returns another player's name or "**INVALID**".
     local localIdx = GetPlayerFromServerId(serverId)
     local fallback = (localIdx ~= -1) and GetPlayerName(localIdx) or nil
-    if fallback == "**INVALID**" then fallback = nil end
+    if fallback == "**INVALID**" or fallback == "" then fallback = nil end
 
-    local stateName = p['spz:name']
-    if stateName == "" then stateName = nil end
+    local stateName = p['spz:name'] or p['username']
+    if stateName == "" or stateName == "**INVALID**" then stateName = nil end
+
+    local finalName = stateName or fallback or ("Driver " .. tostring(serverId))
 
     local data = {
-        name = stateName or fallback or "Racer",
-        crew = p['spz:crew'],
-        license = p['spz:license'],
-        licenseClass = p['spz:licenseClass'],
-        avatar = p['spz:avatar'],
+        name = finalName,
+        crew = nil,
+        license = p['spz:license'] or p['rank'],
+        licenseClass = p['spz:licenseClass'] or (p['rank'] and string.sub(p['rank'], 1, 1)) or "D",
+        avatar = p['spz:avatar'] or p['avatarUrl'],
         banner = p['spz:banner'],
         nation = p['spz:nation'],
         raceNumber = p['spz:raceNumber'],
         isRacing = p['spz:is_racing'] or false
     }
 
-    -- Only cache once the statebags have actually replicated. Caching a
-    -- fallback would pin "Racer" / a missing rank for DataRefreshInterval and,
-    -- since the entry keeps getting refreshed, effectively forever.
-    if stateName then
+    -- Cache once valid state data or fallback name exists
+    if stateName or fallback then
         PlayerDataCache[serverId] = { data = data, lastUpdate = GetGameTimer() }
     end
 
@@ -183,14 +183,16 @@ end)
 
 
 -- State Bag Listeners for real-time updates
-AddStateBagChangeHandler('spz:name', nil, function(bagName, key, value)
-    local src = tonumber(bagName:gsub('player:', ''))
-    if PlayerDataCache[src] then PlayerDataCache[src].lastUpdate = 0 end
-end)
-
-AddStateBagChangeHandler('spz:license', nil, function(bagName, key, value)
-    local src = tonumber(bagName:gsub('player:', ''))
-    if PlayerDataCache[src] then PlayerDataCache[src].lastUpdate = 0 end
+AddStateBagChangeHandler(nil, nil, function(bagName, key, value)
+    if key == 'spz:name' or key == 'username' or key == 'spz:license' or key == 'rank' or key == 'spz:crew' or key == 'crewTag' then
+        if bagName and bagName:find('player:') then
+            local srcStr = bagName:match('player:(%d+)')
+            local src = srcStr and tonumber(srcStr)
+            if src and PlayerDataCache[src] then
+                PlayerDataCache[src].lastUpdate = 0
+            end
+        end
+    end
 end)
 
 -- Debug Mode
