@@ -137,6 +137,10 @@ CreateThread(function()
                                         vehicleName = GetVehicleName(ped)
                                     end
 
+                                    -- Flatten `data` into the tag so the NUI can
+                                    -- read tag.name directly — same shape as the
+                                    -- self tag. Previously nested under .data,
+                                    -- so world tags read tag.name = nil → "Driver".
                                     table.insert(payload, {
                                         id = serverId,
                                         x = x * 100,
@@ -146,7 +150,15 @@ CreateThread(function()
                                         isTalking = isTalking,
                                         distance = Config.ShowDistance and math.floor(dist) or nil,
                                         vehicleName = vehicleName,
-                                        data = data
+                                        name = data.name,
+                                        crew = data.crew,
+                                        license = data.license,
+                                        licenseClass = data.licenseClass,
+                                        avatar = data.avatar,
+                                        banner = data.banner,
+                                        nation = data.nation,
+                                        raceNumber = data.raceNumber,
+                                        isRacing = data.isRacing,
                                     })
                                 end
                             end
