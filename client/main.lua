@@ -167,22 +167,11 @@ CreateThread(function()
                 end
             end
 
-            -- Self Nametag Update
-            local myState = LocalPlayer.state['spz:state'] or "IDLE"
-            if myState == "IDLE" or myState == "FREEROAM" then
-                local myData = GetPlayerData(MyId)
-                if myData then
-                    SendNUIMessage({
-                        action = "updateSelf",
-                        payload = myData
-                    })
-                end
-            else
-                SendNUIMessage({
-                    action = "updateSelf",
-                    payload = nil
-                })
-            end
+            -- Self nametag preview removed — never show our own plate.
+            SendNUIMessage({
+                action = "updateSelf",
+                payload = nil
+            })
 
             SendNUIMessage({
                 action = "update",
