@@ -33,6 +33,7 @@ local function GetPlayerData(serverId)
         banner = p['spz:banner'],
         nation = p['spz:nation'],
         raceNumber = p['spz:raceNumber'],
+        records = p['spz:records'] or 0,   -- track records held → crown
         isRacing = p['spz:is_racing'] or false
     }
 
@@ -158,6 +159,7 @@ CreateThread(function()
                                         banner = data.banner,
                                         nation = data.nation,
                                         raceNumber = data.raceNumber,
+                                        records = data.records,
                                         isRacing = data.isRacing,
                                     })
                                 end
@@ -185,7 +187,7 @@ end)
 
 -- State Bag Listeners for real-time updates
 AddStateBagChangeHandler(nil, nil, function(bagName, key, value)
-    if key == 'spz:name' or key == 'username' or key == 'spz:license' or key == 'rank' or key == 'spz:crew' or key == 'crewTag' then
+    if key == 'spz:name' or key == 'username' or key == 'spz:license' or key == 'rank' or key == 'spz:crew' or key == 'crewTag' or key == 'spz:records' then
         if bagName and bagName:find('player:') then
             local srcStr = bagName:match('player:(%d+)')
             local src = srcStr and tonumber(srcStr)

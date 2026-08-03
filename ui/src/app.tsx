@@ -10,6 +10,7 @@ interface NametagData {
   license?: string
   nation?: string      // ISO 3166-1 alpha-2, lowercase
   raceNumber?: number  // 1-99
+  records?: number     // track records currently held (crown when > 0)
 }
 
 interface WorldTag extends NametagData {
@@ -66,6 +67,11 @@ function Nametag({
 
       {/* floating name (no box) + F1-style flag/number */}
       <div class="nt-body">
+        {typeof data.records === 'number' && data.records > 0 && (
+          <span class="nt-crown" title="Track record holder">
+            👑{data.records > 1 ? data.records : ''}
+          </span>
+        )}
         {data.nation && (
           <img class="nt-flag" src={`flags/${data.nation}.webp`} alt="" />
         )}

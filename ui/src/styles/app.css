@@ -109,6 +109,15 @@
   text-shadow: none;
   flex-shrink: 0;
 }
+.nt-crown {
+  font-size: 12px;
+  line-height: 1;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  color: #ffcf3f;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.9));
+  flex-shrink: 0;
+}
 .nt-name {
   font-family: var(--font-primary);
   font-size: 14px;
