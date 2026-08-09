@@ -1,34 +1,40 @@
 # spz-nametag
-> Dynamic Racing Nametags · `v1.1.5`
 
-## Scripts
+> 3D player nameplates · `v1.1.6`
 
-| Side   | File              | Purpose                                              |
-| ------ | ----------------- | ---------------------------------------------------- |
-| Client | `config.lua`      | Client-side configuration                            |
-| Client | `client/main.lua` | Nametag rendering, NUI bridge, visibility logic      |
-| Server | `config.lua`      | Server-side configuration                            |
-| Server | `server/main.lua` | Player data provision, state sync to clients         |
+## Overview
+
+`spz-nametag` draws minimal nameplates above players and their cars — name, rank and crew
+tag — with distance and occlusion rules so the field stays readable during a race. Player
+data is supplied by the server and cached on the client.
+
+## Structure
+
+| Side | File | Purpose |
+|---|---|---|
+| Client | `config.lua` | Draw distance, scale, visibility rules |
+| Client | `client/main.lua` | Rendering, NUI bridge, visibility logic |
+| Server | `config.lua` | Server-side configuration |
+| Server | `server/main.lua` | Player data provision and sync |
 
 ## NUI
 
-**Stack:** Vite · Preact · TypeScript · spz-ui
+Vite · Preact · TypeScript on the [spz-ui](../spz-ui/README.md) component set.
 
-```
-ui/
-├── src/
-│   ├── app.tsx
-│   ├── components/       # spz-ui components
-│   └── styles/
-└── dist/                 # built output (served by FiveM)
-    └── index.html
+```bash
+cd ui && npm install && npm run build   # → ui/dist/index.html
 ```
 
-Build: `cd ui && npm run build`
+## Commands
+
+| Command | Effect |
+|---|---|
+| `/syncnametags` | Force a re-sync of nametag data |
 
 ## Dependencies
-- ox_lib
-- spz-core
 
-## CI
-Built and released via `.github/workflows/release.yml` on push to `main`.
+`ox_lib` · `spz-core`
+
+---
+
+Part of [SPiceZ-Core](../README.md) · GPL-3.0
