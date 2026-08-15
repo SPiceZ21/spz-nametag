@@ -22,7 +22,8 @@ local function SyncPlayerToState(source)
     end
 
     playerState:set('spz:name', name, true)
-    playerState:set('spz:crew', nil, true)
+    -- crew_tag comes pre-bracketed from identity, e.g. "[NR]" (nil if crewless)
+    playerState:set('spz:crew', profile and profile.crew_tag or nil, true)
     playerState:set('spz:license', (profile and profile.rank) or "D-5", true) -- rank is like D-5, C-1 etc
     playerState:set('spz:licenseClass', string.sub((profile and profile.rank) or "D", 1, 1), true)
     playerState:set('spz:nation', profile and profile.nation, true)          -- ISO alpha-2 (lowercase)

@@ -75,6 +75,7 @@ function Nametag({
         {data.nation && (
           <img class="nt-flag" src={`flags/${data.nation}.webp`} alt="" />
         )}
+        {data.crew && <span class="nt-crew">{data.crew}</span>}
         <span class="nt-name">{displayName}</span>
         {data.raceNumber != null && <span class="nt-num">{data.raceNumber}</span>}
       </div>
