@@ -1,6 +1,5 @@
 -- client/main.lua
 
-local ActiveNametags = {}
 local ShowNametags = true
 local MyId = GetPlayerServerId(PlayerId())
 
@@ -169,12 +168,8 @@ CreateThread(function()
                 end
             end
 
-            -- Self nametag preview removed — never show our own plate.
-            SendNUIMessage({
-                action = "updateSelf",
-                payload = nil
-            })
-
+            -- Self nametag preview removed — never show our own plate. (No per-frame
+            -- updateSelf message: the UI already clears it and nothing sets it.)
             SendNUIMessage({
                 action = "update",
                 nametags = payload
@@ -198,12 +193,3 @@ AddStateBagChangeHandler(nil, nil, function(bagName, key, value)
     end
 end)
 
--- Debug Mode
-if Config.Debug then
-    CreateThread(function()
-        while true do
-            Wait(1000)
-            print(string.format("[spz-nametag] Rendering %d tags", #ActiveNametags))
-        end
-    end)
-end
