@@ -1,5 +1,17 @@
 -- client/main.lua
 
+-- Base theme (server.cfg spz_theme_* convars via spz-core).
+local function pushNametagTheme(theme)
+    if theme and next(theme) then
+        SendNUIMessage({ action = 'theme', theme = theme })
+    end
+end
+CreateThread(function()
+    local ok, theme = pcall(function() return exports['spz-core']:GetTheme() end)
+    if ok then pushNametagTheme(theme) end
+end)
+AddEventHandler('SPZ:themeUpdated', function(theme) pushNametagTheme(theme) end)
+
 local ShowNametags = true
 local MyId = GetPlayerServerId(PlayerId())
 
