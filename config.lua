@@ -25,6 +25,7 @@ Config.Colors = {
 Config.DefaultAvatar = 'https://raw.githubusercontent.com/SPiceZ21/spz-core-media-kit/main/Extra/nametag_profile.png' -- Generic racing helmet/avatar
 Config.DefaultBanner = 'https://raw.githubusercontent.com/SPiceZ21/spz-core-media-kit/main/Extra/nametag.png'
 
+-- Registry: Docs/keybinds.md
 Config.Keybind = {
     enabled = true,
     key = 'F10',
