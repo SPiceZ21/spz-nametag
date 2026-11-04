@@ -8,9 +8,8 @@ version '1.2.2'
 
 shared_script '@ox_lib/init.lua'
 
-files {
-    'ui/dist/**/*',
-}
+-- UI files are not shipped from here: spz-hud serves this resource's page
+-- (synced from ui/ by spz-hud/tools/sync-apps.mjs).
 
 client_scripts {
     '@spz-hud/shim.lua',   -- NUI goes through spz-hud
