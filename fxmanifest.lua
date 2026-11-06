@@ -2,7 +2,7 @@ fx_version 'cerulean'
 game 'gta5'
 
 description 'SPiceZ-Core â€” Dynamic Racing Nametags'
-version '1.2.2'
+version '1.2.3'
 
 -- ui_page 'ui/dist/index.html'  -- drawn by spz-hud now (web/public/apps/spz-nametag); uncomment + drop the shim to roll back
 
